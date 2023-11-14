@@ -1,59 +1,64 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
+import { View, Button } from 'react-native';
+import { MainView, PlayerButton, TextBtn } from "./components/styles";
 
-const TimerApp = () => {
-  const [seconds, setSeconds] = useState(60); // 5 minutos em segundos
-  const [isActive, setIsActive] = useState(false);
-  const [isFinished, setIsFinished] = useState(false);
+const ChessClock = () => {
+  const [player1Time, setPlayer1Time] = useState(300); // Initial Time
+  const [player2Time, setPlayer2Time] = useState(300);
+  const [activePlayer, setActivePlayer] = useState(0); // 0 for nobody, 1 for player 1, 2 for player 2
 
   useEffect(() => {
     let interval;
 
-    if (isActive) {
+    if (activePlayer !== 0 && player1Time > 0 && player2Time > 0) {
       interval = setInterval(() => {
-        setSeconds((prevSeconds) => {
-          const newSeconds = prevSeconds - 1;
-
-          if (newSeconds <= 0) {
-            setIsActive(false);
-            setIsFinished(true);
-            clearInterval(interval);
-            return 0;
-          }
-
-          return newSeconds;
-        });
+        if (activePlayer === 1) {
+          setPlayer1Time((prevTime) => prevTime - 1);
+        } else {
+          setPlayer2Time((prevTime) => prevTime - 1);
+        }
       }, 1000);
     }
 
     return () => clearInterval(interval);
-  }, [isActive]);
+  }, [activePlayer, player1Time, player2Time]);
 
-  const startTimer = () => {
-    setIsActive(true);
-    setIsFinished(false);
+  const startClock = (player) => {
+    setActivePlayer(player);
   };
 
-  const stopTimer = () => {
-    setIsActive(false);
-    setSeconds(300); // Reinicia o timer para 5 minutos
+  const switchPlayer = () => {
+    setActivePlayer((prevPlayer) => (prevPlayer === 1 ? 2 : 1));
   };
 
-  const formatTime = (timeInSeconds) => {
-    const minutes = Math.floor(timeInSeconds / 60);
-    const seconds = timeInSeconds % 60;
+  const resetClock = () => {
+    setPlayer1Time(300);
+    setPlayer2Time(3010);
+    setActivePlayer(0);
+  };
+
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
     return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#363636' }}>
-      <Text style={{ color: '#F8F8F8', fontSize: 50 }}>{formatTime(seconds)}</Text>
-      <Button title="Iniciar" onPress={startTimer} disabled={isActive || isFinished} />
-      <Button title="Parar" onPress={stopTimer} disabled={!isActive && !isFinished} />
-      <StatusBar/>
-    </View>
+    <MainView>
+      {activePlayer === 0 ? (
+        <Button title="Start Clock" onPress={() => startClock(1)} />
+      ) : (
+        <>
+          <PlayerButton onPress={switchPlayer} disabled={activePlayer == 1 ? true : false}>
+            <TextBtn>{formatTime(player2Time)}</TextBtn>
+          </PlayerButton>
+          <PlayerButton onPress={switchPlayer} disabled={activePlayer == 2 ? true : false}>
+            <TextBtn>{formatTime(player1Time)}</TextBtn>
+          </PlayerButton>
+        </>
+      )}
+    </MainView>
   );
 };
 
-export default TimerApp;
+export default ChessClock;
