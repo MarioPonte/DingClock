@@ -4,18 +4,43 @@ export const MainView = styled.View`
     flex: 1;
     justify-content: center;
     align-items: center;
+    background-color: #363636;
 `;
 
-export const PlayerButton = styled.TouchableOpacity`
-    background-color: ${({ disabled }) => !disabled ? '#DC2F2F' : '#363636'};
-    width: 100%;
-    height: 50%;
-    justify-content: center;
-    align-items: center;
+export const StartButton = styled.TouchableOpacity`
+    background-color: #DC2F2F;
+    padding: 20px;
+    border-radius: 10px;
+`;
+
+export const TextOptionsButton = styled.Text`
+    font-size: 20px;
 `;
 
 export const TextBtn = styled.Text`
     color: white;
+    font-size: 20px;
+`;
+
+export const PlayerButton = styled.Pressable`
+    background-color: ${({ disabled }) => !disabled ? '#DC2F2F' : '#363636'};
+    width: 100%;
+    height: 45%;
+    justify-content: center;
+    align-items: center;
+`;
+
+export const TextPlayerBtn = styled.Text`
+    color: white;
     font-size: 50px;
+    transform: rotate(90deg);
+`;
+
+export const InternalGameOptions = styled.View`
+    background-color: #FF894C;
+    width: 100%;
+    height: 10%;
+    justify-content: center;
+    align-items: center;
 `;
 

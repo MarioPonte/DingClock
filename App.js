@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Button } from 'react-native';
-import { MainView, PlayerButton, TextBtn } from "./components/styles";
+import { MainView, TextOptionsButton, StartButton, PlayerButton, TextBtn, TextPlayerBtn, InternalGameOptions } from "./components/styles";
+import { TouchableOpacity } from 'react-native';
 
 const ChessClock = () => {
   const [player1Time, setPlayer1Time] = useState(300); // Initial Time
@@ -12,11 +12,8 @@ const ChessClock = () => {
 
     if (activePlayer !== 0 && player1Time > 0 && player2Time > 0) {
       interval = setInterval(() => {
-        if (activePlayer === 1) {
-          setPlayer1Time((prevTime) => prevTime - 1);
-        } else {
-          setPlayer2Time((prevTime) => prevTime - 1);
-        }
+        if (activePlayer === 1) setPlayer1Time((prevTime) => prevTime - 1);
+        else setPlayer2Time((prevTime) => prevTime - 1);
       }, 1000);
     }
 
@@ -27,13 +24,11 @@ const ChessClock = () => {
     setActivePlayer(player);
   };
 
-  const switchPlayer = () => {
-    setActivePlayer((prevPlayer) => (prevPlayer === 1 ? 2 : 1));
-  };
+  const switchPlayer = () => setActivePlayer((prevPlayer) => (prevPlayer === 1 ? 2 : 1));
 
   const resetClock = () => {
     setPlayer1Time(300);
-    setPlayer2Time(3010);
+    setPlayer2Time(300);
     setActivePlayer(0);
   };
 
@@ -46,14 +41,19 @@ const ChessClock = () => {
   return (
     <MainView>
       {activePlayer === 0 ? (
-        <Button title="Start Clock" onPress={() => startClock(1)} />
+        <StartButton onPress={() => startClock(1)} ><TextBtn>Start Clock</TextBtn></StartButton>
       ) : (
         <>
           <PlayerButton onPress={switchPlayer} disabled={activePlayer == 1 ? true : false}>
-            <TextBtn>{formatTime(player2Time)}</TextBtn>
+            <TextPlayerBtn>{formatTime(player2Time)}</TextPlayerBtn>
           </PlayerButton>
+          <InternalGameOptions>
+            <TouchableOpacity>
+              <TextOptionsButton onPress={resetClock}>Reset</TextOptionsButton>
+            </TouchableOpacity>
+          </InternalGameOptions>
           <PlayerButton onPress={switchPlayer} disabled={activePlayer == 2 ? true : false}>
-            <TextBtn>{formatTime(player1Time)}</TextBtn>
+            <TextPlayerBtn>{formatTime(player1Time)}</TextPlayerBtn>
           </PlayerButton>
         </>
       )}
