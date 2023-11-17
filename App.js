@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MainView, TextOptionsButton, StartButton, PlayerButton, TextBtn, TextPlayerBtn, InternalGameOptions } from "./components/styles";
 import { TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const ChessClock = () => {
   const initialTimeInSeconds = 60;
@@ -46,7 +47,7 @@ const ChessClock = () => {
   return (
     <MainView>
       {activePlayer === 0 ? (
-        <StartButton onPress={() => startClock(1)}><TextBtn>Start Clock</TextBtn></StartButton>
+        <StartButton onPress={() => startClock(1)}><Icon name="clock-o" size={20} color="white" /><TextBtn>Start Clock</TextBtn></StartButton>
       ) : (
         <>
           <PlayerButton onPress={switchPlayer} disabled={activePlayer === 1}>
@@ -54,7 +55,7 @@ const ChessClock = () => {
           </PlayerButton>
           <InternalGameOptions>
             <TouchableOpacity>
-              <TextOptionsButton onPress={resetClock}>Reset</TextOptionsButton>
+              <TextOptionsButton onPress={resetClock}><Icon name='rotate-right' size={26} color="white" /></TextOptionsButton>
             </TouchableOpacity>
           </InternalGameOptions>
           <PlayerButton onPress={switchPlayer} disabled={activePlayer === 2}>

@@ -8,6 +8,9 @@ export const MainView = styled.View`
 `;
 
 export const StartButton = styled.TouchableOpacity`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     background-color: #DC2F2F;
     padding: 20px;
     border-radius: 10px;
@@ -18,6 +21,7 @@ export const TextOptionsButton = styled.Text`
 `;
 
 export const TextBtn = styled.Text`
+    margin-left: 8px;
     color: white;
     font-size: 20px;
 `;
