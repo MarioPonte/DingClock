@@ -7,7 +7,7 @@ export const MainView = styled.View`
     background-color: #363636;
 `;
 
-export const StartButton = styled.TouchableOpacity`
+export const StartButton = styled.Pressable`
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -47,4 +47,3 @@ export const InternalGameOptions = styled.View`
     justify-content: center;
     align-items: center;
 `;
-

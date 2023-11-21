@@ -2,12 +2,28 @@ import React, { useState, useEffect } from 'react';
 import { MainView, TextOptionsButton, StartButton, PlayerButton, TextBtn, TextPlayerBtn, InternalGameOptions } from "./components/styles";
 import { TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { Audio } from 'expo-av';
 
 const ChessClock = () => {
   const initialTimeInSeconds = 60;
   const [player1Time, setPlayer1Time] = useState(initialTimeInSeconds * 1000); // Initial Time in milliseconds
   const [player2Time, setPlayer2Time] = useState(initialTimeInSeconds * 1000);
   const [activePlayer, setActivePlayer] = useState(0); // 0 for nobody, 1 for player 1, 2 for player 2
+  const [sound, setSound] = useState();
+
+  useEffect(() => {
+    async function setupSound(){
+      const { sound } = await Audio.Sound.createAsync(
+        require('./assets/buttonSound.mp3')
+      );
+      setSound(sound);
+    }
+    setupSound();
+  }, []);
+
+  const playSound = async () => {
+    if (sound) await sound.replayAsync();
+  };
 
   useEffect(() => {
     let interval;
@@ -22,11 +38,12 @@ const ChessClock = () => {
     return () => clearInterval(interval);
   }, [activePlayer, player1Time, player2Time]);
 
-  const startClock = (player) => {
-    setActivePlayer(player);
-  };
+  const startClock = (player) => setActivePlayer(player);
 
-  const switchPlayer = () => setActivePlayer((prevPlayer) => (prevPlayer === 1 ? 2 : 1));
+  const switchPlayer = () => {
+    playSound();
+    setActivePlayer((prevPlayer) => (prevPlayer === 1 ? 2 : 1));
+  };
 
   const resetClock = () => {
     setPlayer1Time(initialTimeInSeconds * 1000);
@@ -40,7 +57,7 @@ const ChessClock = () => {
     if (time > 0) {
       return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
     } else {
-      return "Venceu";
+      return "Perdeu";
     }
   };
 
@@ -50,7 +67,7 @@ const ChessClock = () => {
         <StartButton onPress={() => startClock(1)}><Icon name="clock-o" size={20} color="white" /><TextBtn>Start Clock</TextBtn></StartButton>
       ) : (
         <>
-          <PlayerButton onPress={switchPlayer} disabled={activePlayer === 1}>
+          <PlayerButton android_disableSound={true} onPress={switchPlayer} disabled={activePlayer === 1}>
             <TextPlayerBtn>{formatTime(player2Time)}</TextPlayerBtn>
           </PlayerButton>
           <InternalGameOptions>
@@ -58,7 +75,7 @@ const ChessClock = () => {
               <TextOptionsButton onPress={resetClock}><Icon name='rotate-right' size={26} color="white" /></TextOptionsButton>
             </TouchableOpacity>
           </InternalGameOptions>
-          <PlayerButton onPress={switchPlayer} disabled={activePlayer === 2}>
+          <PlayerButton android_disableSound={true} onPress={switchPlayer} disabled={activePlayer === 2}>
             <TextPlayerBtn>{formatTime(player1Time)}</TextPlayerBtn>
           </PlayerButton>
         </>
