@@ -17,6 +17,8 @@ export const StartButton = styled.Pressable`
 `;
 
 export const TextOptionsButton = styled.Text`
+    margin-left: 10px;
+    margin-right: 10px;
     font-size: 20px;
 `;
 
@@ -41,6 +43,8 @@ export const TextPlayerBtn = styled.Text`
 `;
 
 export const InternalGameOptions = styled.View`
+    display: flex;
+    flex-direction: row;
     background-color: #FF894C;
     width: 100%;
     height: 10%;

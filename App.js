@@ -9,7 +9,10 @@ const ChessClock = () => {
   const [player1Time, setPlayer1Time] = useState(initialTimeInSeconds * 1000); // Initial Time in milliseconds
   const [player2Time, setPlayer2Time] = useState(initialTimeInSeconds * 1000);
   const [activePlayer, setActivePlayer] = useState(0); // 0 for nobody, 1 for player 1, 2 for player 2
-  const [sound, setSound] = useState();
+  const [isPaused, setIsPaused] = useState(false); // Pause clock
+  const [sound, setSound] = useState(); // Sound of the Buttons
+
+  const togglePause = () => setIsPaused((prevIsPaused) => !prevIsPaused);
 
   useEffect(() => {
     async function setupSound(){
@@ -21,22 +24,17 @@ const ChessClock = () => {
     setupSound();
   }, []);
 
-  const playSound = async () => {
-    if (sound) await sound.replayAsync();
-  };
+  const playSound = async () => sound && (await sound.replayAsync());
 
   useEffect(() => {
     let interval;
 
-    if (activePlayer !== 0 && player1Time > 0 && player2Time > 0) {
-      interval = setInterval(() => {
-        if (activePlayer === 1) setPlayer1Time((prevTime) => prevTime - 100);
-        else setPlayer2Time((prevTime) => prevTime - 100);
-      }, 48);
+    if (activePlayer !== 0 && player1Time > 0 && player2Time > 0 && !isPaused) {
+      interval = setInterval(() => (activePlayer === 1 ? setPlayer1Time : setPlayer2Time)((prevTime) => prevTime - 100), 48);
     }
 
     return () => clearInterval(interval);
-  }, [activePlayer, player1Time, player2Time]);
+  }, [activePlayer, player1Time, player2Time, isPaused]);
 
   const startClock = (player) => setActivePlayer(player);
 
@@ -48,34 +46,37 @@ const ChessClock = () => {
   const resetClock = () => {
     setPlayer1Time(initialTimeInSeconds * 1000);
     setPlayer2Time(initialTimeInSeconds * 1000);
+    setIsPaused(false);
     setActivePlayer(0);
   };
 
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60000);
     const seconds = Math.floor((time % 60000) / 1000);
-    if (time > 0) {
-      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    } else {
-      return "Perdeu";
-    }
+    return time > 0 ? `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}` : "Perdeu";
   };
 
   return (
     <MainView>
       {activePlayer === 0 ? (
-        <StartButton onPress={() => startClock(1)}><Icon name="clock-o" size={20} color="white" /><TextBtn>Start Clock</TextBtn></StartButton>
+        <StartButton onPress={() => startClock(1)}>
+          <Icon name="clock-o" size={20} color="white" />
+          <TextBtn>Start Clock</TextBtn>
+        </StartButton>
       ) : (
         <>
-          <PlayerButton android_disableSound={true} onPress={switchPlayer} disabled={activePlayer === 1}>
+          <PlayerButton android_disableSound={true} onPress={switchPlayer} disabled={isPaused || activePlayer === 1}>
             <TextPlayerBtn>{formatTime(player2Time)}</TextPlayerBtn>
           </PlayerButton>
           <InternalGameOptions>
-            <TouchableOpacity>
-              <TextOptionsButton onPress={resetClock}><Icon name='rotate-right' size={26} color="white" /></TextOptionsButton>
+            <TouchableOpacity onPress={togglePause}>
+              <TextOptionsButton><Icon name={isPaused ? 'play' : 'pause'} size={26} color="white" /></TextOptionsButton>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={resetClock}>
+              <TextOptionsButton><Icon name='rotate-right' size={26} color="white" /></TextOptionsButton>
             </TouchableOpacity>
           </InternalGameOptions>
-          <PlayerButton android_disableSound={true} onPress={switchPlayer} disabled={activePlayer === 2}>
+          <PlayerButton android_disableSound={true} onPress={switchPlayer} disabled={isPaused || activePlayer === 2}>
             <TextPlayerBtn>{formatTime(player1Time)}</TextPlayerBtn>
           </PlayerButton>
         </>
