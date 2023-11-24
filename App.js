@@ -11,11 +11,12 @@ const ChessClock = () => {
   const [activePlayer, setActivePlayer] = useState(0); // 0 for nobody, 1 for player 1, 2 for player 2
   const [isPaused, setIsPaused] = useState(false); // Pause clock
   const [sound, setSound] = useState(); // Sound of the Buttons
+  const [isSoundEnabled, setIsSoundEnabled] = useState(true);
 
   const togglePause = () => setIsPaused((prevIsPaused) => !prevIsPaused);
 
   useEffect(() => {
-    async function setupSound(){
+    async function setupSound() {
       const { sound } = await Audio.Sound.createAsync(
         require('./assets/buttonSound.mp3')
       );
@@ -24,7 +25,11 @@ const ChessClock = () => {
     setupSound();
   }, []);
 
-  const playSound = async () => sound && (await sound.replayAsync());
+  const playSound = async () => {
+    if (sound && isSoundEnabled) {
+      await sound.replayAsync();
+    }
+  };
 
   useEffect(() => {
     let interval;
@@ -69,6 +74,9 @@ const ChessClock = () => {
             <TextPlayerBtn>{formatTime(player2Time)}</TextPlayerBtn>
           </PlayerButton>
           <InternalGameOptions>
+            <TouchableOpacity onPress={() => setIsSoundEnabled((prevIsEnabled) => !prevIsEnabled)}>
+              <TextOptionsButton><Icon name={isSoundEnabled ? 'volume-up' : 'volume-off'} size={26} color="white" /></TextOptionsButton>
+            </TouchableOpacity>
             <TouchableOpacity onPress={togglePause}>
               <TextOptionsButton><Icon name={isPaused ? 'play' : 'pause'} size={26} color="white" /></TextOptionsButton>
             </TouchableOpacity>
