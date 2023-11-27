@@ -1,41 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { MainView, TextOptionsButton, StartButton, PlayerButton, TextBtn, TextPlayerBtn, InternalGameOptions } from "./components/styles";
+import { MainView, TextOptionsButton, StartButton, PlayerButton, TextBtn, TextPlayerBtn, InternalGameOptions } from "../../components/styles";
 import { TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Audio } from 'expo-av';
+import { Link } from 'expo-router';
 
-const ChessClock = () => {
-  const initialTimeInSeconds = 60;
+const Clock = () => {
+  const initialTimeInSeconds = 300;
   const [player1Time, setPlayer1Time] = useState(initialTimeInSeconds * 1000); // Initial Time in milliseconds
   const [player2Time, setPlayer2Time] = useState(initialTimeInSeconds * 1000);
   const [activePlayer, setActivePlayer] = useState(0); // 0 for nobody, 1 for player 1, 2 for player 2
   const [isPaused, setIsPaused] = useState(false); // Pause clock
   const [sound, setSound] = useState(); // Sound of the Buttons
-  const [isSoundEnabled, setIsSoundEnabled] = useState(true);
+  const [isSoundEnabled, setIsSoundEnabled] = useState(true); // Sound ON and OFF
 
   const togglePause = () => setIsPaused((prevIsPaused) => !prevIsPaused);
 
   useEffect(() => {
     async function setupSound() {
-      const { sound } = await Audio.Sound.createAsync(
-        require('./assets/buttonSound.mp3')
-      );
+      const { sound } = await Audio.Sound.createAsync(require('../../assets/buttonSound.mp3'));
       setSound(sound);
     }
     setupSound();
   }, []);
 
   const playSound = async () => {
-    if (sound && isSoundEnabled) {
-      await sound.replayAsync();
-    }
+    if (sound && isSoundEnabled) await sound.replayAsync();
   };
 
   useEffect(() => {
     let interval;
 
     if (activePlayer !== 0 && player1Time > 0 && player2Time > 0 && !isPaused) {
-      interval = setInterval(() => (activePlayer === 1 ? setPlayer1Time : setPlayer2Time)((prevTime) => prevTime - 100), 48);
+      interval = setInterval(() => (activePlayer === 1 ? setPlayer1Time : setPlayer2Time)((prevTime) => prevTime - 100), 46);
     }
 
     return () => clearInterval(interval);
@@ -62,14 +59,7 @@ const ChessClock = () => {
   };
 
   return (
-    <MainView>
-      {activePlayer === 0 ? (
-        <StartButton onPress={() => startClock(1)}>
-          <Icon name="clock-o" size={20} color="white" />
-          <TextBtn>Start Clock</TextBtn>
-        </StartButton>
-      ) : (
-        <>
+    <MainView>   
           <PlayerButton android_disableSound={true} onPress={switchPlayer} disabled={isPaused || activePlayer === 1}>
             <TextPlayerBtn>{formatTime(player2Time)}</TextPlayerBtn>
           </PlayerButton>
@@ -87,10 +77,8 @@ const ChessClock = () => {
           <PlayerButton android_disableSound={true} onPress={switchPlayer} disabled={isPaused || activePlayer === 2}>
             <TextPlayerBtn>{formatTime(player1Time)}</TextPlayerBtn>
           </PlayerButton>
-        </>
-      )}
     </MainView>
   );
 };
 
-export default ChessClock;
+export default Clock;
