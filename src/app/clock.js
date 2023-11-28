@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { MainView, TextOptionsButton, StartButton, PlayerButton, TextBtn, TextPlayerBtn, InternalGameOptions } from "../../components/styles";
+import { MainView, TextOptionsButton, PlayerButton, TextPlayerBtn, InternalGameOptions } from "../../components/styles";
 import { TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Audio } from 'expo-av';
-import { Link } from 'expo-router';
 
 const Clock = () => {
   const initialTimeInSeconds = 300;
@@ -37,8 +36,6 @@ const Clock = () => {
 
     return () => clearInterval(interval);
   }, [activePlayer, player1Time, player2Time, isPaused]);
-
-  const startClock = (player) => setActivePlayer(player);
 
   const switchPlayer = () => {
     playSound();

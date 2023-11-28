@@ -7,7 +7,7 @@ export const MainView = styled.View`
     background-color: #363636;
 `;
 
-export const StartButton = styled.Pressable`
+export const StartButton = styled.View`
     display: flex;
     flex-direction: row;
     align-items: center;
