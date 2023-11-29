@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { MainView, TextOptionsButton, PlayerButton, TextPlayerBtn, InternalGameOptions } from "../../components/styles";
+import { TextOptionsButton, PlayerButton, TextPlayerBtn, InternalGameOptions } from "../../components/styles";
 import { TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Audio } from 'expo-av';
+import { Link } from 'expo-router';
 
 const Clock = () => {
   const initialTimeInSeconds = 300;
@@ -56,25 +57,32 @@ const Clock = () => {
   };
 
   return (
-    <MainView>   
-          <PlayerButton android_disableSound={true} onPress={switchPlayer} disabled={isPaused || activePlayer === 1}>
-            <TextPlayerBtn>{formatTime(player2Time)}</TextPlayerBtn>
-          </PlayerButton>
-          <InternalGameOptions>
-            <TouchableOpacity onPress={() => setIsSoundEnabled((prevIsEnabled) => !prevIsEnabled)}>
-              <TextOptionsButton><Icon name={isSoundEnabled ? 'volume-up' : 'volume-off'} size={26} color="white" /></TextOptionsButton>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={togglePause}>
-              <TextOptionsButton><Icon name={isPaused ? 'play' : 'pause'} size={26} color="white" /></TextOptionsButton>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={resetClock}>
-              <TextOptionsButton><Icon name='rotate-right' size={26} color="white" /></TextOptionsButton>
-            </TouchableOpacity>
-          </InternalGameOptions>
-          <PlayerButton android_disableSound={true} onPress={switchPlayer} disabled={isPaused || activePlayer === 2}>
-            <TextPlayerBtn>{formatTime(player1Time)}</TextPlayerBtn>
-          </PlayerButton>
-    </MainView>
+    <>
+      <PlayerButton android_disableSound={true} onPress={switchPlayer} disabled={isPaused || activePlayer === 1}>
+        <TextPlayerBtn>{formatTime(player2Time)}</TextPlayerBtn>
+      </PlayerButton>
+      <InternalGameOptions>
+        <TouchableOpacity onPress={() => setIsSoundEnabled((prevIsEnabled) => !prevIsEnabled)}>
+          <TextOptionsButton><Icon name={isSoundEnabled ? 'volume-up' : 'volume-off'} size={26} color="white" /></TextOptionsButton>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={togglePause}>
+          <TextOptionsButton><Icon name={isPaused ? 'play' : 'pause'} size={26} color="white" /></TextOptionsButton>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={resetClock}>
+          <TextOptionsButton><Icon name='rotate-right' size={26} color="white" /></TextOptionsButton>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={resetClock}>
+          <TextOptionsButton>
+            <Link href="/">
+              <Icon name='close' size={26} color="white" />
+            </Link>
+          </TextOptionsButton>
+        </TouchableOpacity>
+      </InternalGameOptions>
+      <PlayerButton android_disableSound={true} onPress={switchPlayer} disabled={isPaused || activePlayer === 2}>
+        <TextPlayerBtn>{formatTime(player1Time)}</TextPlayerBtn>
+      </PlayerButton>
+    </>
   );
 };
 

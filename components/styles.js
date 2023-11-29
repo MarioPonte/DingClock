@@ -23,7 +23,6 @@ export const TextOptionsButton = styled.Text`
 `;
 
 export const TextBtn = styled.Text`
-    margin-left: 8px;
     color: white;
     font-size: 20px;
 `;
